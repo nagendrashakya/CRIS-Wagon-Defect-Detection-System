@@ -1,0 +1,8 @@
+# CRIS Wagon Defect Detection System - Dependencies
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.6
+pillow>=9.5.0
+pydantic>=2.0.0
+torch>=2.0.0
+ultralytics>=8.0.0

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Dashboard | CRIS Wagon Defect Detection System</title>
+  <meta name="description" content="Inspection Analytics & Defect Statistics - CRIS Wagon Defect Detection System">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Chart.js & Axios CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Sticky Header Navbar -->
+  <header class="header-navbar">
+    <a href="index.html" class="brand-container">
+      <div class="brand-logo">CRIS</div>
+      <div class="brand-text-container">
+        <span class="brand-title">Wagon Defect Detection System</span>
+        <span class="brand-subtitle">Centre for Railway Information Systems</span>
+      </div>
+    </a>
+
+    <nav>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html"><span>📷</span> Detect Defects</a></li>
+        <li class="nav-item"><a href="result.html"><span>🎯</span> Detection Result</a></li>
+        <li class="nav-item"><a href="dashboard.html" class="active"><span>📊</span> Statistics</a></li>
+        <li class="nav-item"><a href="history.html"><span>📜</span> History</a></li>
+      </ul>
+    </nav>
+
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>Analytics Engine Active</span>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <div class="main-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title-group">
+          <h1>Inspection Statistics Dashboard</h1>
+          <p>Real-time analytics summarizing wagon defect frequency, severity distributions, and inspection throughput.</p>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards Grid -->
+      <div class="summary-cards-row" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="stat-card">
+          <div class="stat-icon blue">📸</div>
+          <div class="stat-details">
+            <div class="stat-value" id="kpiTotalImages">0</div>
+            <div class="stat-label">Total Images</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red">⚠️</div>
+          <div class="stat-details">
+            <div class="stat-value" id="kpiTotalDefects">0</div>
+            <div class="stat-label">Total Defects</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red">🔴</div>
+          <div class="stat-details">
+            <div class="stat-value" id="kpiRust">0</div>
+            <div class="stat-label">Rust</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon amber">🟠</div>
+          <div class="stat-details">
+            <div class="stat-value" id="kpiDent">0</div>
+            <div class="stat-label">Dent</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red">💥</div>
+          <div class="stat-details">
+            <div class="stat-value" id="kpiStructural">0</div>
+            <div class="stat-label">Structural_damage</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid Row -->
+      <div class="dashboard-grid">
+        
+        <!-- Bar Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📊</span> Defect Detections by Category
+            </div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Count Breakdown</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="defectBarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Doughnut / Pie Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🍩</span> Percentage Distribution of Defects
+            </div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Share (%)</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="defectPieChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Detection Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🕒</span> Recent Wagon Detections
+          </div>
+          <a href="history.html" class="btn btn-outline btn-sm">View Full History &rarr;</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Wagon ID & Image</th>
+                <th>Detected Defects</th>
+                <th>Inspection Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentTableBody">
+              <!-- Populated dynamically by dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    CRIS Wagon Defect Detection System &bull; Centre for Railway Information Systems &bull; Indian Railways
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

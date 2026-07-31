@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Detect | CRIS Wagon Defect Detection System</title>
+  <meta name="description"
+    content="AI-Powered Railway Wagon Defect Detection System - Centre for Railway Information Systems (CRIS)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+  <!-- Sticky Enterprise Header Navbar -->
+  <header class="header-navbar">
+    <a href="index.html" class="brand-container">
+      <div class="brand-logo">CRIS</div>
+      <div class="brand-text-container">
+        <span class="brand-title">Wagon Defect Detection System</span>
+        <span class="brand-subtitle">Centre for Railway Information Systems</span>
+      </div>
+    </a>
+
+    <nav>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html" class="active"><span>📷</span> Detect Defects</a></li>
+        <li class="nav-item"><a href="result.html"><span>🎯</span> Detection Result</a></li>
+        <li class="nav-item"><a href="dashboard.html"><span>📊</span> Statistics</a></li>
+        <li class="nav-item"><a href="history.html"><span>📜</span> History</a></li>
+      </ul>
+    </nav>
+
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>System Ready</span>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="app-container">
+    <div class="main-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title-group">
+          <h1>Automated Wagon Defect Inspection</h1>
+          <p>Upload a railway wagon image to identify surface rust, dents, structural damage, and decolorisation using
+            AI.</p>
+        </div>
+      </div>
+
+      <!-- Main Upload Grid Layout -->
+      <div class="upload-container">
+
+        <!-- Left: Upload & Drag-Drop Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📤</span> Image Upload
+            </div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Supports JPG, PNG (Max 15MB)</span>
+          </div>
+
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="fileInput" class="file-input-hidden" accept="image/*" multiple>
+            <input type="file" id="folderInput" class="file-input-hidden" accept="image/*" webkitdirectory directory
+              multiple>
+
+            <div class="upload-icon-circle">
+              📂
+            </div>
+            <h3>Drag & Drop Image(s) or Folder Here</h3>
+            <p>Select single/multiple files or choose an entire wagon inspection folder</p>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:0.5rem;">
+              <button type="button" class="btn btn-primary" id="browseBtn">
+                <span>📁</span> Select Images
+              </button>
+              <button type="button" class="btn btn-outline" id="browseFolderBtn" style="background:#FFFFFF;">
+                <span>📂</span> Select Folder
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Image Preview / Batch Queue & Detection Action -->
+        <div class="card preview-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span id="previewTitleIcon">🖼️</span> <span id="previewTitleText">Image Preview</span>
+            </div>
+            <span id="batchCountBadge" class="defect-badge rust" style="display:none; font-size:0.8rem;">0 Files
+              Selected</span>
+          </div>
+
+          <div class="preview-wrapper" id="previewWrapper">
+            <img id="previewImg" src="" alt="Selected Wagon Preview" style="display:none;">
+            <div class="preview-placeholder" id="previewPlaceholder">
+              <span style="font-size:2.5rem;">📸</span>
+              <span>No image or folder selected</span>
+            </div>
+
+            <!-- Batch Queue Container (Visible when multiple images/folder selected) -->
+            <div id="batchQueueContainer"
+              style="display:none; width:100%; height:100%; padding:12px; overflow-y:auto; background:#0F172A; color:#FFFFFF;">
+              <div
+                style="font-size:0.85rem; font-weight:600; color:#94A3B8; margin-bottom:8px; border-bottom:1px solid #334155; padding-bottom:4px;">
+                Batch Files Queue:</div>
+              <ul id="batchFileList"
+                style="list-style:none; padding:0; margin:0; font-size:0.8rem; display:flex; flex-direction:column; gap:6px;">
+                <!-- Filled dynamically -->
+              </ul>
+            </div>
+          </div>
+
+          <div class="image-meta-info" id="imageMetaInfo">
+            <div class="meta-row">
+              <span>Selected Target:</span>
+              <span class="meta-val" id="metaFileName">--</span>
+            </div>
+            <div class="meta-row">
+              <span>Total Batch Size:</span>
+              <span class="meta-val" id="metaFileSize">--</span>
+            </div>
+            <div class="meta-row">
+              <span>Mode:</span>
+              <span class="meta-val" id="metaDimensions">--</span>
+            </div>
+          </div>
+
+          <div style="margin-top:auto; padding-top:1.25rem;">
+            <button type="button" class="btn btn-primary btn-block" id="detectBtn" disabled style="padding:14px;">
+              <span>⚡</span> <span id="detectBtnText">Detect Defects</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Loading Overlay Modal -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-title">Analyzing Wagon Image...</div>
+    <div class="loading-subtitle">AI model is scanning for structural damage, rust, and surface dents</div>
+  </div>
+
+  <!-- Enterprise Footer -->
+  <footer class="app-footer">
+    CRIS Wagon Defect Detection System &bull; Centre for Railway Information Systems &bull; Indian Railways
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
